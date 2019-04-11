@@ -55,7 +55,7 @@
   .vue-carousel-component {
     overflow: hidden;
 
-    /deep/ img {
+    ::v-deep img {
       max-width: 100%;
     }
 

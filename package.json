@@ -1,6 +1,6 @@
 {
   "name": "vue-smart-carousel",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "A smart vue carousel component",
   "main": "dist/vue-smart-carousel.umd.js",
   "module": "dist/vue-smart-carousel.esm.js",
@@ -23,14 +23,19 @@
   "keywords": [
     "vue",
     "smart",
-    "carousel"
+    "carousel",
+    "async",
+    "viewport"
   ],
-  "author": "Boris Graeff",
+  "author": "Boris Graeff <boris.graeff@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/boris-graeff/vue-smart-carousel/issues"
   },
   "homepage": "https://github.com/boris-graeff/vue-smart-carousel#readme",
+  "dependencies": {
+    "vue": "^2.6.10"
+  },
   "devDependencies": {
     "node-sass": "^4.11.0",
     "rollup": "^1.10.0",
@@ -38,7 +43,6 @@
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-vue": "^5.0.0",
     "sass-loader": "^7.1.0",
-    "vue": "^2.6.10",
     "vue-template-compiler": "^2.6.10"
   }
 }
