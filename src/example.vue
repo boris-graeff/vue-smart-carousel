@@ -37,6 +37,6 @@
 
   .example-2 {
     max-width: 600px;
-    margin: auto;
+    margin: 100vh auto;
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="vue-carousel-component">
     <ul :style="{width: `${slides.length * 100}%`, transform: `translateX(-${100 / slides.length * index}%)`}">
-      <li v-for="slide in slides" :key="slide.context._uid" :style="{width: `${100 / slides.length}%`}">
+      <li v-for="slide in slides" :style="{width: `${100 / slides.length}%`}">
         <vnodes :vnode="slide" />
       </li>
     </ul>
@@ -24,11 +24,19 @@
     },
     mounted() {
         this.slides = [this.$slots.default[0]]
-        setTimeout(() => {
-            this.slides = this.$slots.default
-        }, 3000)
 
-        this.restart()
+        this.observer = new IntersectionObserver(entries => {
+            const carousel = entries[0]
+
+            if (carousel.isIntersecting) {
+                // Mount others slides and start carousel
+                this.slides = this.$slots.default
+                this.restart()
+                this.observer.disconnect()
+            }
+        })
+
+        this.observer.observe(this.$el)
     },
     methods: {
       restart () {
@@ -41,6 +49,7 @@
     },
     beforeDestroy() {
       clearInterval(this.interval)
+      this.observer.disconnect()
     },
     components: {
         vnodes: {

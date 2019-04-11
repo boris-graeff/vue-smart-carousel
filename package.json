@@ -1,6 +1,6 @@
 {
   "name": "vue-smart-carousel",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A smart vue carousel component",
   "main": "dist/vue-smart-carousel.umd.js",
   "module": "dist/vue-smart-carousel.esm.js",
