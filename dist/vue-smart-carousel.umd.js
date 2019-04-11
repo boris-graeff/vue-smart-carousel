@@ -1,7 +1,7 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
-  (global = global || self, factory(global.VueCarouselComponent = {}));
+  (global = global || self, factory(global.VueSmartCarousel = {}));
 }(this, function (exports) { 'use strict';
 
   //
@@ -16,27 +16,51 @@
   //
 
   var script = {
+    model: {
+        prop: 'index',
+        event: 'change'
+    },
     props: {
         delay: {
             type: Number,
             default: 3000
+        },
+        index: {
+            type: Number,
+            default: 0
         }
     },
     data: function data() {
         return {
-            index: 0,
-            slides: []
+            slides: [],
+            realIndex: 0
+        }
+    },
+    watch: {
+        index: function index() {
+          var length = this.slides.length;
+          this.realIndex = ((this.index % length) + length) % length;
+          if (this.realIndex != this.index) { this.$emit('change', this.realIndex); }
+          this.restart();
         }
     },
     mounted: function mounted() {
         var this$1 = this;
 
         this.slides = [this.$slots.default[0]];
-        setTimeout(function () {
-            this$1.slides = this$1.$slots.default;
-        }, 3000);
 
-        this.restart();
+        this.observer = new IntersectionObserver(function (entries) {
+            var carousel = entries[0];
+
+            if (carousel.isIntersecting) {
+                // Mount others slides and start carousel
+                this$1.slides = this$1.$slots.default;
+                this$1.restart();
+                this$1.observer.disconnect();
+            }
+        });
+
+        this.observer.observe(this.$el);
     },
     methods: {
       restart: function restart () {
@@ -45,12 +69,14 @@
         clearInterval(this.interval);
 
         this.interval = setInterval(function () {
-          this$1.index = (this$1.index + 1) % this$1.slides.length;
+          this$1.realIndex = (this$1.realIndex + 1) % this$1.slides.length;
+          this$1.$emit('change', this$1.realIndex);
         }, this.delay);
       }
     },
     beforeDestroy: function beforeDestroy() {
       clearInterval(this.interval);
+      this.observer.disconnect();
     },
     components: {
         vnodes: {
@@ -203,23 +229,20 @@
     var _vm = this;
     var _h = _vm.$createElement;
     var _c = _vm._self._c || _h;
-    return _c("div", { staticClass: "vue-carousel-component" }, [
+    return _c("div", { staticClass: "vue-smart-carousel" }, [
       _c(
         "ul",
         {
           style: {
             width: _vm.slides.length * 100 + "%",
             transform:
-              "translateX(-" + (100 / _vm.slides.length) * _vm.index + "%)"
+              "translateX(-" + (100 / _vm.slides.length) * _vm.realIndex + "%)"
           }
         },
         _vm._l(_vm.slides, function(slide) {
           return _c(
             "li",
-            {
-              key: slide.context._uid,
-              style: { width: 100 / _vm.slides.length + "%" }
-            },
+            { style: { width: 100 / _vm.slides.length + "%" } },
             [_c("vnodes", { attrs: { vnode: slide } })],
             1
           )
@@ -234,11 +257,11 @@
     /* style */
     var __vue_inject_styles__ = function (inject) {
       if (!inject) { return }
-      inject("data-v-426d2c9b_0", { source: ".vue-carousel-component[data-v-426d2c9b] {\n  overflow: hidden;\n}\n.vue-carousel-component[data-v-426d2c9b]  img {\n  max-width: 100%;\n}\n.vue-carousel-component > ul[data-v-426d2c9b] {\n  display: flex;\n  flex-direction: row;\n  backface-visibility: hidden;\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  transition: transform 500ms ease;\n  will-change: transform;\n}\n.vue-carousel-component > ul > li[data-v-426d2c9b] {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n/*# sourceMappingURL=vue-carousel-component.vue.map */", map: {"version":3,"sources":["/home/bof/workspace/vue-smart-carousel/src/vue-carousel-component.vue","vue-carousel-component.vue"],"names":[],"mappings":"AAsDA;EACA,gBAAA;ACrDA;ADuDA;EACA,eAAA;ACrDA;ADwDA;EACA,aAAA;EACA,mBAAA;EACA,2BAAA;EACA,gBAAA;EACA,UAAA;EACA,SAAA;EACA,gCAAA;EACA,sBAAA;ACtDA;ADwDA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;ACtDA;;AAEA,qDAAqD","file":"vue-carousel-component.vue","sourcesContent":["<template>\n  <div class=\"vue-carousel-component\">\n    <ul :style=\"{width: `${slides.length * 100}%`, transform: `translateX(-${100 / slides.length * index}%)`}\">\n      <li v-for=\"slide in slides\" :key=\"slide.context._uid\" :style=\"{width: `${100 / slides.length}%`}\">\n        <vnodes :vnode=\"slide\" />\n      </li>\n    </ul>\n  </div>\n</template>\n\n<script>\n  export default {\n    props: {\n        delay: {\n            type: Number,\n            default: 3000\n        }\n    },\n    data() {\n        return {\n            index: 0,\n            slides: []\n        }\n    },\n    mounted() {\n        this.slides = [this.$slots.default[0]]\n        setTimeout(() => {\n            this.slides = this.$slots.default\n        }, 3000)\n\n        this.restart()\n    },\n    methods: {\n      restart () {\n        clearInterval(this.interval)\n\n        this.interval = setInterval(() => {\n          this.index = (this.index + 1) % this.slides.length\n        }, this.delay)\n      }\n    },\n    beforeDestroy() {\n      clearInterval(this.interval)\n    },\n    components: {\n        vnodes: {\n            functional: true,\n            render: (h, ctx) => ctx.props.vnode\n        }\n    }\n  }\n</script>\n\n<style scoped lang=\"scss\">\n  .vue-carousel-component {\n    overflow: hidden;\n\n    ::v-deep img {\n      max-width: 100%;\n    }\n\n    > ul {\n      display: flex;\n      flex-direction: row;\n      backface-visibility: hidden;\n      list-style: none;\n      padding: 0;\n      margin: 0;\n      transition: transform 500ms ease;\n      will-change: transform;\n\n      > li {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n      }\n    }\n  }\n</style>\n",".vue-carousel-component {\n  overflow: hidden;\n}\n.vue-carousel-component ::v-deep img {\n  max-width: 100%;\n}\n.vue-carousel-component > ul {\n  display: flex;\n  flex-direction: row;\n  backface-visibility: hidden;\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  transition: transform 500ms ease;\n  will-change: transform;\n}\n.vue-carousel-component > ul > li {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n/*# sourceMappingURL=vue-carousel-component.vue.map */"]}, media: undefined });
+      inject("data-v-2ae53def_0", { source: ".vue-smart-carousel[data-v-2ae53def] {\n  overflow: hidden;\n}\n.vue-smart-carousel[data-v-2ae53def]  img {\n  max-width: 100%;\n}\n.vue-smart-carousel > ul[data-v-2ae53def] {\n  display: flex;\n  flex-direction: row;\n  backface-visibility: hidden;\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  transition: transform 500ms ease;\n  will-change: transform;\n}\n.vue-smart-carousel > ul > li[data-v-2ae53def] {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n/*# sourceMappingURL=vue-smart-carousel.vue.map */", map: {"version":3,"sources":["/home/bof/workspace/vue-smart-carousel/src/vue-smart-carousel.vue","vue-smart-carousel.vue"],"names":[],"mappings":"AAgFA;EACA,gBAAA;AC/EA;ADiFA;EACA,eAAA;AC/EA;ADkFA;EACA,aAAA;EACA,mBAAA;EACA,2BAAA;EACA,gBAAA;EACA,UAAA;EACA,SAAA;EACA,gCAAA;EACA,sBAAA;AChFA;ADkFA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;AChFA;;AAEA,iDAAiD","file":"vue-smart-carousel.vue","sourcesContent":["<template>\n  <div class=\"vue-smart-carousel\">\n    <ul :style=\"{width: `${slides.length * 100}%`, transform: `translateX(-${100 / slides.length * realIndex}%)`}\">\n      <li v-for=\"slide in slides\" :style=\"{width: `${100 / slides.length}%`}\">\n        <vnodes :vnode=\"slide\" />\n      </li>\n    </ul>\n  </div>\n</template>\n\n<script>\n  export default {\n    model: {\n        prop: 'index',\n        event: 'change'\n    },\n    props: {\n        delay: {\n            type: Number,\n            default: 3000\n        },\n        index: {\n            type: Number,\n            default: 0\n        }\n    },\n    data() {\n        return {\n            slides: [],\n            realIndex: 0\n        }\n    },\n    watch: {\n        index() {\n          const length = this.slides.length\n          this.realIndex = ((this.index % length) + length) % length\n          if (this.realIndex != this.index) this.$emit('change', this.realIndex)\n          this.restart()\n        }\n    },\n    mounted() {\n        this.slides = [this.$slots.default[0]]\n\n        this.observer = new IntersectionObserver(entries => {\n            const carousel = entries[0]\n\n            if (carousel.isIntersecting) {\n                // Mount others slides and start carousel\n                this.slides = this.$slots.default\n                this.restart()\n                this.observer.disconnect()\n            }\n        })\n\n        this.observer.observe(this.$el)\n    },\n    methods: {\n      restart () {\n        clearInterval(this.interval)\n\n        this.interval = setInterval(() => {\n          this.realIndex = (this.realIndex + 1) % this.slides.length\n          this.$emit('change', this.realIndex)\n        }, this.delay)\n      }\n    },\n    beforeDestroy() {\n      clearInterval(this.interval)\n      this.observer.disconnect()\n    },\n    components: {\n        vnodes: {\n            functional: true,\n            render: (h, ctx) => ctx.props.vnode\n        }\n    }\n  }\n</script>\n\n<style scoped lang=\"scss\">\n  .vue-smart-carousel {\n    overflow: hidden;\n\n    ::v-deep img {\n      max-width: 100%;\n    }\n\n    > ul {\n      display: flex;\n      flex-direction: row;\n      backface-visibility: hidden;\n      list-style: none;\n      padding: 0;\n      margin: 0;\n      transition: transform 500ms ease;\n      will-change: transform;\n\n      > li {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n      }\n    }\n  }\n</style>\n",".vue-smart-carousel {\n  overflow: hidden;\n}\n.vue-smart-carousel ::v-deep img {\n  max-width: 100%;\n}\n.vue-smart-carousel > ul {\n  display: flex;\n  flex-direction: row;\n  backface-visibility: hidden;\n  list-style: none;\n  padding: 0;\n  margin: 0;\n  transition: transform 500ms ease;\n  will-change: transform;\n}\n.vue-smart-carousel > ul > li {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n/*# sourceMappingURL=vue-smart-carousel.vue.map */"]}, media: undefined });
 
     };
     /* scoped */
-    var __vue_scope_id__ = "data-v-426d2c9b";
+    var __vue_scope_id__ = "data-v-2ae53def";
     /* module identifier */
     var __vue_module_identifier__ = undefined;
     /* functional template */
@@ -247,7 +270,7 @@
     
 
     
-    var VueCarouselComponent = normalizeComponent_1(
+    var VueSmartCarousel = normalizeComponent_1(
       { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
       __vue_inject_styles__,
       __vue_script__,
@@ -262,7 +285,7 @@
   function install(Vue) {
       if (install.installed) { return; }
       install.installed = true;
-      Vue.component('VueCarouselComponent', VueCarouselComponent);
+      Vue.component('VueSmartCarousel', VueSmartCarousel);
   }
 
   // Create module definition for Vue.use()
@@ -281,7 +304,7 @@
       GlobalVue.use(plugin);
   }
 
-  exports.default = VueCarouselComponent;
+  exports.default = VueSmartCarousel;
   exports.install = install;
 
   Object.defineProperty(exports, '__esModule', { value: true });

@@ -28,3 +28,6 @@ export default {
 }
 ```
 
+## Examples
+    
+Please take a look to demo file to get examples of navigation implementations (previous/next buttons and dots list).
