@@ -1,0 +1,42 @@
+{
+  "name": "vue-smart-carousel",
+  "version": "1.0.0",
+  "description": "A smart vue carousel component",
+  "main": "dist/vue-smart-carousel.umd.js",
+  "module": "dist/vue-smart-carousel.esm.js",
+  "unpkg": "dist/vue-smart-carousel.min.js",
+  "browser": {
+    "./sfc": "src/vue-smart-carousel.vue"
+  },
+  "scripts": {
+    "serve": "vue serve --open src/vue-carousel-component.vue",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build:umd & npm run build:es & npm run build:unpkg",
+    "build:umd": "rollup --config build/rollup.config.js --format umd --file dist/vue-smart-carousel.umd.js",
+    "build:es": "rollup --config build/rollup.config.js --format es --file dist/vue-smart-carousel.esm.js",
+    "build:unpkg": "rollup --config build/rollup.config.js --format iife --file dist/vue-smart-carousel.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boris-graeff/vue-smart-carousel.git"
+  },
+  "keywords": [
+    "vue",
+    "smart",
+    "carousel"
+  ],
+  "author": "Boris Graeff",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boris-graeff/vue-smart-carousel/issues"
+  },
+  "homepage": "https://github.com/boris-graeff/vue-smart-carousel#readme",
+  "devDependencies": {
+    "rollup": "^1.10.0",
+    "rollup-plugin-buble": "^0.19.6",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-vue": "^5.0.0",
+    "vue": "^2.6.10",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
