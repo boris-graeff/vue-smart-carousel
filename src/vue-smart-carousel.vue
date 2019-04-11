@@ -1,6 +1,6 @@
 <template>
-  <div class="vue-carousel-component">
-    <ul :style="{width: `${slides.length * 100}%`, transform: `translateX(-${100 / slides.length * index}%)`}">
+  <div class="vue-smart-carousel">
+    <ul :style="{width: `${slides.length * 100}%`, transform: `translateX(-${100 / slides.length * realIndex}%)`}">
       <li v-for="slide in slides" :style="{width: `${100 / slides.length}%`}">
         <vnodes :vnode="slide" />
       </li>
@@ -10,16 +10,32 @@
 
 <script>
   export default {
+    model: {
+        prop: 'index',
+        event: 'change'
+    },
     props: {
         delay: {
             type: Number,
             default: 3000
+        },
+        index: {
+            type: Number,
+            default: 0
         }
     },
     data() {
         return {
-            index: 0,
-            slides: []
+            slides: [],
+            realIndex: 0
+        }
+    },
+    watch: {
+        index() {
+          const length = this.slides.length
+          this.realIndex = ((this.index % length) + length) % length
+          if (this.realIndex != this.index) this.$emit('change', this.realIndex)
+          this.restart()
         }
     },
     mounted() {
@@ -43,7 +59,8 @@
         clearInterval(this.interval)
 
         this.interval = setInterval(() => {
-          this.index = (this.index + 1) % this.slides.length
+          this.realIndex = (this.realIndex + 1) % this.slides.length
+          this.$emit('change', this.realIndex)
         }, this.delay)
       }
     },
@@ -61,7 +78,7 @@
 </script>
 
 <style scoped lang="scss">
-  .vue-carousel-component {
+  .vue-smart-carousel {
     overflow: hidden;
 
     ::v-deep img {

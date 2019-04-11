@@ -1,10 +1,10 @@
-import VueCarouselComponent from './vue-carousel-component.vue';
+import VueSmartCarousel from './vue-smart-carousel.vue';
 
 // Declare install function executed by Vue.use()
 export function install(Vue) {
     if (install.installed) return;
     install.installed = true;
-    Vue.component('VueCarouselComponent', VueCarouselComponent);
+    Vue.component('VueSmartCarousel', VueSmartCarousel);
 }
 
 // Create module definition for Vue.use()
@@ -24,4 +24,4 @@ if (GlobalVue) {
 }
 
 // To allow use as module (npm/webpack/etc.) export component
-export default VueCarouselComponent;
+export default VueSmartCarousel;

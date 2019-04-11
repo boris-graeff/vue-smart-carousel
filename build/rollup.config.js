@@ -8,7 +8,7 @@ const external = Object.keys(pkg.dependencies);
 export default {
     input: 'src/wrapper.js', // Path relative to package.json
     output: {
-        name: 'VueCarouselComponent',
+        name: 'VueSmartCarousel',
         exports: 'named',
     },
     plugins: [
