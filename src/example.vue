@@ -1,8 +1,8 @@
 <template>
   <div class="app">
     <section class="example-1">
-      <vue-carousel-component>
-        <div>1</div>
+      <vue-carousel-component class="carousel">
+        <img src="https://cdn.pixabay.com/photo/2016/03/09/16/50/city-street-1246870_960_720.jpg" />
         <div>2</div>
         <div>3</div>
         <div><strong>4</strong></div>
@@ -11,7 +11,7 @@
 
     <section class="example-2">
       <vue-carousel-component>
-        <div>1</div>
+        <img src="https://cdn.pixabay.com/photo/2016/03/09/16/50/city-street-1246870_960_720.jpg" />
         <div>2</div>
         <div>3</div>
         <div><strong>4</strong></div>
@@ -31,14 +31,12 @@
 </script>
 
 <style scoped lang="scss">
-  .app {
-    section {
-      border: 1px solid tomato;
-    }
+  .example-1 {
+
   }
 
   .example-2 {
-    max-width: 1000px;
+    max-width: 600px;
     margin: auto;
   }
 </style>
