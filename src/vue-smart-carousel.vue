@@ -47,7 +47,7 @@
 
             if (carousel.isIntersecting) {
                 // Mount others slides and start carousel
-                this.slides = this.$slots.default
+                this.slides = slides
                 this.restart()
                 this.observer.disconnect()
             }
