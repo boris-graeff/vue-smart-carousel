@@ -39,7 +39,8 @@
         }
     },
     mounted() {
-        this.slides = [this.$slots.default[0]]
+        const slides = this.$slots.default.filter(el => el.tag || el.text.trim().length)
+        this.slides.push(slides[0])
 
         this.observer = new IntersectionObserver(entries => {
             const carousel = entries[0]
