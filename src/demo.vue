@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <section class="example-1">
-      <h2>Previous / next buttons navigation example</h2>
+      <h2>Previous / next navigation example</h2>
       <vue-smart-carousel class="carousel" v-model="index1">
         <img src="https://source.unsplash.com/random/1024x512?a" />
         <img src="https://source.unsplash.com/random/1024x512?b" />
@@ -16,7 +16,7 @@
     </section>
 
     <section class="example-2">
-      <h2>Dots list navigation example</h2>
+      <h2>Pagination example</h2>
       <p>Note that autoplay start only when carousel is visible on viewport</p>
       <vue-smart-carousel v-model="index2">
         <img src="https://source.unsplash.com/random/1024x512?e" />
